@@ -8,7 +8,7 @@ services:
       args:
         # The fallback is what actually reaches the build: an explicit compose arg overrides the
         # Dockerfile's own ARG default, so bumping this file is what makes a release distinguishable.
-        APP_VERSION: ${APP_VERSION:-v2}
+        APP_VERSION: ${APP_VERSION:-v3}
     restart: unless-stopped
     environment:
       # Proves the secret actually reaches the process, rather than only reaching the env file.
