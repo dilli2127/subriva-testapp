@@ -6,7 +6,7 @@ WORKDIR /app
 COPY server.js ./
 
 # Surfaced at /health so a deployment can be told apart from the one before it.
-ARG APP_VERSION=dev
+ARG APP_VERSION=v2
 ENV APP_VERSION=$APP_VERSION
 
 RUN addgroup -S app && adduser -S app -G app
