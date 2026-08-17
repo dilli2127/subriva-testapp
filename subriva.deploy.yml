@@ -33,6 +33,13 @@ health:
       equals: ok
   viaNginx: false
 
+nginx:
+  enabled: true
+  template: deploy/nginx/site.conf.hbs
+  upstream:
+    host: 127.0.0.1
+    port: 8081
+
 rollback:
   enabled: true
   keepReleases: 3

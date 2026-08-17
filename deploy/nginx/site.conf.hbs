@@ -1,0 +1,27 @@
+# Nginx site for {{project}} / {{environment}}, rendered by Subriva Deploy.
+#
+# Read from this repository at the commit being deployed, so rolling the code back rolls this file
+# back with it. Substitution only — the five placeholders below are the whole vocabulary, and an
+# unknown one fails the deployment rather than rendering empty.
+
+server {
+    listen 80;
+    server_name {{domain}};
+
+    # Where the platform says this release is listening.
+    location / {
+        proxy_pass http://{{upstream_host}}:{{upstream_port}};
+        proxy_http_version 1.1;
+
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_connect_timeout 5s;
+        proxy_read_timeout    30s;
+    }
+
+    # Proves which release answered, without reading a log.
+    add_header X-Subriva-Environment "{{project}}-{{environment}}" always;
+}
