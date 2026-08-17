@@ -1,0 +1,43 @@
+# Subriva Deploy contract for the platform's own end-to-end test fixture.
+#
+# Deliberately minimal: no dependencies, no migrations, no nginx, no publishing. Every section that
+# could fail for a reason belonging to *this app* rather than to the platform has been left out, so
+# that a red deployment here means the platform is broken.
+contract: 1
+
+project: testapp
+
+build:
+  strategy: local
+  composeFile: docker-compose.yml
+  services: [app]
+  timeoutSec: 600
+
+deploy:
+  services: [app]
+  strategy: recreate
+  removeOrphans: true
+  timeoutSec: 180
+  containers:
+    - subriva-testapp-local-app-1
+
+health:
+  path: /health
+  port: 8081
+  expectStatus: [200]
+  retries: 10
+  backoffMs: 2000
+  gracePeriodSec: 5
+  expectBody:
+    - jsonPath: $.status
+      equals: ok
+  viaNginx: false
+
+rollback:
+  enabled: true
+  keepReleases: 3
+
+env:
+  # Set as an environment secret in Subriva Deploy. The deployment fails fast if it is missing,
+  # which is itself worth testing.
+  required: [GREETING]

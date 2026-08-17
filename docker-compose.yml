@@ -1,0 +1,17 @@
+# Subriva Deploy runs this with --project-name subriva-testapp-<env> and --env-file <the env it
+# wrote>, so the container set is stable across releases and every ${VAR} below is resolved from
+# the environment's stored secrets — never from anything in this repository.
+services:
+  app:
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    restart: unless-stopped
+    environment:
+      # Proves the secret actually reaches the process, rather than only reaching the env file.
+      GREETING: ${GREETING}
+      PORT: 8081
+    ports:
+      # Loopback only: the health check dials 127.0.0.1 on the host, and nothing else should reach it.
+      - '127.0.0.1:8081:8081'
